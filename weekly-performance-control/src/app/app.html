@@ -1,0 +1,20 @@
+<main>
+  <h1>Control de Rendimiento Semanal</h1>
+
+  <div class="role-selector" style="margin-bottom:12px">
+    <label style="margin-right:10px;">
+      <input type="radio" name="role" value="ADMIN" [(ngModel)]="selectedRole" /> Admin
+    </label>
+    <label>
+      <input type="radio" name="role" value="SUPERVISOR" [(ngModel)]="selectedRole" /> Supervisor
+    </label>
+  </div>
+
+  <app-performance-control
+    [userRole]="selectedRole"
+    [areaId]="areaId"
+    [idSupervisor]="supervisorId"
+    (areasDataChanged)="console.log('Areas actualizadas',)"
+    (datosParaExcel)="console.log('Registro para Excel',)">
+  </app-performance-control>
+</main>

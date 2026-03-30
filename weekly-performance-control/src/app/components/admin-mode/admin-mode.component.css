@@ -1,0 +1,10 @@
+.admin-container { border: 1px solid #ccc; border-radius: 8px; padding: 12px; background: #fdfdfd; }
+.admin-container h2 { margin-top: 0; }
+.panel { margin-bottom: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+.areas-list { list-style: none; padding: 0; }
+.areas-list li { cursor: pointer; padding: 6px; border-bottom: 1px solid #eee; }
+.areas-list li.selected { background: #e8f5e9; font-weight: bold; }
+.tbl-colaboradores { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.tbl-colaboradores th, .tbl-colaboradores td { border: 1px solid #ddd; padding: 6px; }
+.msg.error { color: #b00020; }
+.msg.success { color: #2e7d32; }

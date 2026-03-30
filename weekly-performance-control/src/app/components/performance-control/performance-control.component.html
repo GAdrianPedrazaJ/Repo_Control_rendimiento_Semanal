@@ -1,0 +1,25 @@
+<div class="performance-control-container">
+  <h1>Control de Rendimiento Semanal</h1>
+
+  <div class="role-banner" [ngClass]="{ admin: userRole===UserRole.ADMIN, supervisor: userRole===UserRole.SUPERVISOR }">
+    <span *ngIf="userRole===UserRole.ADMIN">Modo Admin</span>
+    <span *ngIf="userRole===UserRole.SUPERVISOR">Modo Supervisor</span>
+  </div>
+
+  <ng-container [ngSwitch]="userRole">
+    <app-admin-mode
+      *ngSwitchCase="UserRole.ADMIN"
+      (areasActualizadas)="onAreasActualizadas($event)">
+    </app-admin-mode>
+
+    <app-supervisor-mode
+      *ngSwitchCase="UserRole.SUPERVISOR"
+      [idArea]="areaId"
+      [idSupervisor]="idSupervisor"
+      [colaboradores]="colaboradores"
+      (registroSemanalGenerado)="onRegistroSemanal($event)">
+    </app-supervisor-mode>
+
+    <div *ngSwitchDefault>Rol indefinido. Por favor configure userRole en Admin o Supervisor.</div>
+  </ng-container>
+</div>

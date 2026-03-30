@@ -1,0 +1,55 @@
+<div class="firma-control">
+  <div class="firma-meta">
+    <span>{{ nombre }} ({{ idColaborador }})</span>
+    <small *ngIf="timestampFirma">Firmado: {{ timestampFirma }}</small>
+  </div>
+
+  <button
+    type="button"
+    [disabled]="yaFirmado || firmo"
+    (click)="abrirPanelFirma()"
+    [ngClass]="{ firmada: yaFirmado || firmo }"
+    class="btn-firmar"
+  >
+    {{ yaFirmado || firmo ? '✓ Firmado' : '✍️ Firmar' }}
+  </button>
+
+  <!-- MODAL DE FIRMA -->
+  <div *ngIf="mostrarPanelFirma" class="firma-modal-overlay">
+    <div class="firma-modal">
+      <div class="modal-header">
+        <h3>Firma de {{ nombre }}</h3>
+        <button type="button" class="btn-close" (click)="cerrarPanelFirma()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="instruccion">Dibuja tu firma en el área blanca</p>
+        <canvas
+          #signatureCanvas
+          class="signature-canvas"
+          width="500"
+          height="200"
+          (mousedown)="onMouseDown($event)"
+          (mousemove)="onMouseMove($event)"
+          (mouseup)="onMouseUp()"
+          (mouseleave)="onMouseUp()"
+          (touchstart)="onTouchStart($event)"
+          (touchmove)="onTouchMove($event)"
+          (touchend)="onTouchEnd()"
+        ></canvas>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="limpiarFirma()">
+          🔄 Limpiar
+        </button>
+        <button type="button" class="btn-secondary" (click)="cerrarPanelFirma()">
+          ✕ Cancelar
+        </button>
+        <button type="button" class="btn-primary" (click)="confirmarFirma()">
+          ✓ Confirmar Firma
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="logo-circle">SL</div>
+      <h1>Control de Rendimiento Semanal</h1>
+      <p class="subtitle">Identificación de usuario</p>
+    </div>
+
+    <form (ngSubmit)="onIngresar()" class="login-form">
+      <div class="form-group">
+        <label for="username">Nombre de usuario</label>
+        <input
+          id="username"
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          placeholder="Tu nombre..."
+          (keypress)="onKeyPress($event)"
+          [disabled]="cargando"
+          class="form-input"
+          autocomplete="off" />
+      </div>
+
+      <button type="submit" class="btn-ingresar" [disabled]="cargando">
+        {{ cargando ? '⏳ Verificando...' : 'Ingresar' }}
+      </button>
+    </form>
+
+    <!-- Demo Users -->
+    <div class="demo-section">
+      <p class="demo-title">O ingresa como usuario de prueba:</p>
+      <div class="demo-buttons">
+        <button
+          *ngFor="let user of demoUsers"
+          type="button"
+          class="btn-demo"
+          (click)="onDemoLogin(user)"
+          [disabled]="cargando"
+        >
+          <span class="demo-icon">👤</span>
+          <span>{{ user.username }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="admin-container">
+  <h2>Administrador: Gestión de Áreas y Colaboradores</h2>
+
+  <div class="msg error" *ngIf="mensajeError">{{ mensajeError }}</div>
+  <div class="msg success" *ngIf="mensajeOk">{{ mensajeOk }}</div>
+
+  <section class="panel">
+    <h3>Crear Área</h3>
+    <form [formGroup]="areaForm" (ngSubmit)="agregarArea()">
+      <label>Nombre del Área</label>
+      <input formControlName="nombre" placeholder="Ej: Bloque A" />
+      <label>Descripción</label>
+      <input formControlName="descripcion" placeholder="Descripción opcional" />
+      <button type="submit">Agregar Área</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h3>Áreas existentes</h3>
+    <ul class="areas-list">
+      <li *ngFor="let area of areas" (click)="seleccionarArea(area)" [class.selected]="areaSeleccionada?.id_area === area.id_area">
+        <strong>{{ area.nombre }}*</strong> <span>({{ area.estado }})</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="panel" *ngIf="areaSeleccionada">
+    <h3>Colaboradores en {{ areaSeleccionada.nombre }}</h3>
+    <form [formGroup]="colaboradorForm" (ngSubmit)="agregarColaborador()">
+      <label>ID Colaborador</label>
+      <input formControlName="id_colaborador" placeholder="ID único" />
+      <label>Nombre</label>
+      <input formControlName="nombre" placeholder="Ej: Nanci" />
+      <label>Cargo</label>
+      <input formControlName="cargo" placeholder="Ej: Operario de Corte" />
+      <button type="submit">Agregar Colaborador</button>
+    </form>
+
+    <table class="tbl-colaboradores">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Cargo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let col of colaboradores">
+          <td>{{ col.id_colaborador }}</td>
+          <td>{{ col.nombre }}</td>
+          <td>{{ col.cargo }}</td>
+          <td>{{ col.estado }}</td>
+          <td>
+            <button *ngIf="col.estado === 'ACTIVO'" (click)="marcarColaboradorInactivo(col)">Inactivar</button>
+            <button *ngIf="col.estado !== 'ACTIVO'" (click)="activarColaborador(col)">Activar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
