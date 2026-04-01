@@ -338,9 +338,10 @@ export class SupervisorModeComponent implements OnChanges {
 
     // Sincronizar con cola offline
     const registro = this.generarRegistro(true);
-    this.syncService
-      .agregarAColaSync('REGISTRO_RENDIMIENTO', 'UPDATE', registro)
-      .catch(console.error);
+    // TODO: Usar OfflineFirstService.actualizarRegistroRendimiento() en su lugar
+    // this.syncService.agregarAColaSync('REGISTRO_RENDIMIENTO', 'UPDATE', registro)
+    //   .catch(console.error);
+    this.registroSemanalGenerado.emit(registro);
   }
 
   /**
@@ -409,7 +410,8 @@ export class SupervisorModeComponent implements OnChanges {
   async guardarRegistro(): Promise<void> {
     const registro = this.generarRegistro();
     this.registroSemanalGenerado.emit(registro);
-    await this.syncService.agregarAColaSync('REGISTRO_RENDIMIENTO', 'CREATE', registro);
+    // TODO: Usar OfflineFirstService.crearRegistroRendimiento() en su lugar
+    // await this.syncService.agregarAColaSync('REGISTRO_RENDIMIENTO', 'CREATE', registro);
     this.mensaje = 'Registro listo para sincronizar con Excel.';
   }
 }

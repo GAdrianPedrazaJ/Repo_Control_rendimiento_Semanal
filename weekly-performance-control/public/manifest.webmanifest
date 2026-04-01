@@ -1,0 +1,120 @@
+{
+  "name": "Control de Rendimientos Semanal",
+  "short_name": "Performance Control",
+  "description": "Aplicación PWA Offline-First para el control de rendimientos semanal de colaboradores",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/maskable-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/icons/maskable-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshots/screenshot-540x720.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/assets/screenshots/screenshot-906x1280.png",
+      "sizes": "906x1280",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Capturar Rendimiento",
+      "short_name": "Capturar",
+      "description": "Ir directamente a la captura de rendimientos",
+      "url": "/performance-control",
+      "icons": [
+        {
+          "src": "/assets/icons/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Ver Estadísticas",
+      "short_name": "Estadísticas",
+      "description": "Ver estadísticas de sincronización",
+      "url": "/estadisticas",
+      "icons": [
+        {
+          "src": "/assets/icons/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
