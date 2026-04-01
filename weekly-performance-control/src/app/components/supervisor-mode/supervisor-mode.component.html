@@ -7,16 +7,22 @@
     </div>
     <div class="header-status">
       <span class="status-indicator" [ngClass]="{ cargando: cargando, listo: !cargando }">
-        {{ cargando ? '⏳ Cargando...' : '✓ Listo' }}
+        <app-icon *ngIf="cargando" name="loader" [size]="'sm'"></app-icon>
+        <app-icon *ngIf="!cargando" name="check" [size]="'sm'" [color]="'success'"></app-icon>
+        {{ cargando ? 'Cargando...' : 'Listo' }}
       </span>
     </div>
   </div>
 
   <!-- ACCIONES GENERALES -->
   <div class="actions-bar">
-    <button class="btn-secondary" (click)="cargarDatos()">🔄 Refrescar</button>
+    <button class="btn-secondary" (click)="cargarDatos()">
+      <app-icon name="refresh" [size]="'sm'"></app-icon>
+      Refrescar
+    </button>
     <button class="btn-primary" (click)="guardarRegistro()" [disabled]="cargando || colaboradoresFormArray.controls.length === 0">
-      💾 Guardar Registro
+      <app-icon name="save" [size]="'sm'"></app-icon>
+      Guardar Registro
     </button>
   </div>
 
@@ -30,7 +36,7 @@
     <div class="colaboradores-grid" *ngIf="colaboradoresFormArray.controls.length > 0" formArrayName="colaboradores">
       
       <!-- CARD POR COLABORADOR -->
-      <div class="colaborador-card" *ngFor="let control of colaboradoresFormArray.controls; let i = index" [formGroupName]="i" [class.firmado]="control.get('firma_colaborador')?.value">
+      <div class="colaborador-card" *ngFor="let control of colaboradoresFormArray.controls; let i = index; trackBy: trackByColaborador" [formGroupName]="i" [class.firmado]="control.get('firma_colaborador')?.value">
         
         <!-- HEADER DE LA CARD -->
         <div class="card-header">
@@ -39,8 +45,14 @@
             <p class="cargo">{{ control.get('cargo')?.value }}</p>
           </div>
           <div class="col-badge">
-            <span *ngIf="control.get('firma_colaborador')?.value" class="badge-firmado">✓ Firmado</span>
-            <span *ngIf="!control.get('firma_colaborador')?.value" class="badge-pendiente">⏱ Pendiente</span>
+            <span *ngIf="control.get('firma_colaborador')?.value" class="badge-firmado">
+              <app-icon name="check-circle" [size]="'sm'" [color]="'success'"></app-icon>
+              Firmado
+            </span>
+            <span *ngIf="!control.get('firma_colaborador')?.value" class="badge-pendiente">
+              <app-icon name="clock" [size]="'sm'"></app-icon>
+              Pendiente
+            </span>
           </div>
         </div>
 
@@ -145,7 +157,9 @@
 
     <!-- ESTADO VACÍO -->
     <div class="empty-state" *ngIf="colaboradoresFormArray.controls.length === 0 && !cargando">
-      <div class="empty-icon">📋</div>
+      <div class="empty-icon">
+        <app-icon name="dashboard" [size]="48"></app-icon>
+      </div>
       <h3>No hay colaboradores</h3>
       <p>Carga el área para ver los colaboradores asignados.</p>
       <button class="btn-primary" (click)="cargarDatos()">Cargar Área</button>

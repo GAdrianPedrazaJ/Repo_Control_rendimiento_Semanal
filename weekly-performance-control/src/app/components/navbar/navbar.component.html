@@ -1,7 +1,9 @@
 <nav class="navbar">
   <!-- LEFT SECTION: LOGO + INFO -->
   <div class="navbar-left">
-    <div class="logo">📊</div>
+    <div class="logo">
+      <app-icon name="dashboard" size="28" customClass="logo-icon"></app-icon>
+    </div>
     <div class="nav-info">
       <h3 class="app-title">Control Rendimiento</h3>
       <p class="breadcrumb" *ngIf="area">{{ area }} • Semana {{ semana }} de {{ anio }}</p>
@@ -19,16 +21,16 @@
   <!-- RIGHT SECTION: USER PROFILE -->
   <div class="navbar-right">
     <button class="profile-btn" (click)="toggleDropdown()">
-      <span class="avatar">{{ username?.charAt(0)?.toUpperCase() || 'U' }}</span>
+      <span class="avatar">{{ userInitial }}</span>
       <span class="username">{{ username }}</span>
-      <span class="dropdown-icon">{{ showDropdown ? '▲' : '▼' }}</span>
+      <app-icon [name]="showDropdown ? 'chevron-up' : 'chevron-down'" [size]="14" customClass="chevron-icon"></app-icon>
     </button>
 
     <!-- DROPDOWN MENU -->
     <div class="dropdown-menu" *ngIf="showDropdown">
       <div class="dropdown-item user-profile">
         <div class="profile-header">
-          <div class="avatar-large">{{ username?.charAt(0)?.toUpperCase() || 'U' }}</div>
+          <div class="avatar-large">{{ userInitial }}</div>
           <div class="profile-info">
             <p class="profile-name">{{ username }}</p>
             <p class="profile-role">Supervisor</p>
@@ -39,7 +41,7 @@
       <div class="dropdown-divider"></div>
 
       <button class="dropdown-item danger" (click)="onLogout()">
-        <span class="icon">🚪</span>
+        <app-icon name="logout" [size]="'sm'"></app-icon>
         <span>Cerrar Sesión</span>
       </button>
     </div>

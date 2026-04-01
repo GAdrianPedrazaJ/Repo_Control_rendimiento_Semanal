@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild, ElementRef, AfterVie
 import { CommonModule } from '@angular/common';
 import { SignatureService } from '../../services';
 import { TokenFirma } from '../../models';
+import { IconComponent } from '../icon/icon.component';
 
 /**
  * PAYLOAD DE FIRMA
@@ -24,7 +25,7 @@ interface FirmaPayload {
 @Component({
   selector: 'app-firma-colaborador',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent],
   templateUrl: './firma-colaborador.component.html',
   styleUrls: ['./firma-colaborador.component.css']
 })
@@ -44,6 +45,7 @@ export class FirmaColaboradorComponent implements AfterViewInit {
   firmo = false; // Bandera: Firmó en esta sesión
   timestampFirma: string | null = null; // Timestamp ISO de la firma
   mostrarPanelFirma = false; // Controla visibilidad del modal
+  hasDrawn = false; // Indica si existe trazo válido en el canvas
 
   // ===== REFERENCIAS CANVAS =====
   private canvas!: HTMLCanvasElement; // Elemento canvas para dibujar
@@ -59,11 +61,7 @@ export class FirmaColaboradorComponent implements AfterViewInit {
    * Obtiene referencias al canvas e inicializa config de dibujo
    */
   ngAfterViewInit(): void {
-    if (this.signatureCanvas) {
-      this.canvas = this.signatureCanvas.nativeElement;
-      this.ctx = this.canvas.getContext('2d')!;
-      this.inicializarCanvas();
-    }
+    this.ensureCanvasReady();
   }
 
   /**
@@ -89,9 +87,10 @@ export class FirmaColaboradorComponent implements AfterViewInit {
   abrirPanelFirma(): void {
     if (this.yaFirmado || this.firmo) return;
     this.mostrarPanelFirma = true;
-    // Reinicializar canvas cuando se abre
+    this.hasDrawn = false;
+    // Reinicializar canvas cuando se abre (el canvas existe después del render por *ngIf)
     setTimeout(() => {
-      if (this.canvas) {
+      if (this.ensureCanvasReady()) {
         this.inicializarCanvas();
       }
     }, 0);
@@ -111,6 +110,7 @@ export class FirmaColaboradorComponent implements AfterViewInit {
     if (this.ctx) {
       this.ctx.fillStyle = 'white';
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.hasDrawn = false;
     }
   }
 
@@ -144,6 +144,7 @@ export class FirmaColaboradorComponent implements AfterViewInit {
     this.ctx.moveTo(this.lastX, this.lastY);
     this.ctx.lineTo(currentX, currentY);
     this.ctx.stroke();
+    this.hasDrawn = true;
 
     // Actualizar la última posición
     this.lastX = currentX;
@@ -192,6 +193,7 @@ export class FirmaColaboradorComponent implements AfterViewInit {
     this.ctx.moveTo(this.lastX, this.lastY);
     this.ctx.lineTo(currentX, currentY);
     this.ctx.stroke();
+    this.hasDrawn = true;
 
     this.lastX = currentX;
     this.lastY = currentY;
@@ -213,6 +215,8 @@ export class FirmaColaboradorComponent implements AfterViewInit {
    * - Cierra el modal
    */
   confirmarFirma(): void {
+    if (!this.ensureCanvasReady() || !this.hasDrawn) return;
+
     // Convertir canvas dibujado a imagen PNG base64
     const firmaBase64 = this.canvas.toDataURL('image/png');
 
@@ -221,6 +225,8 @@ export class FirmaColaboradorComponent implements AfterViewInit {
       this.idColaborador,
       `REG_${this.idColaborador}_${Date.now()}`
     );
+    // Guardar evidencia visual de la firma en base64
+    tokenFirma.valor_base64 = firmaBase64;
     
     // Guardar timestamp para mostrar en UI
     this.timestampFirma = tokenFirma.timestamp_iso;
@@ -239,5 +245,14 @@ export class FirmaColaboradorComponent implements AfterViewInit {
 
     // Emitir evento al componente padre (supervisor-mode)
     this.firma.emit(payload);
+  }
+
+  private ensureCanvasReady(): boolean {
+    if (!this.signatureCanvas?.nativeElement) return false;
+    this.canvas = this.signatureCanvas.nativeElement;
+    const ctx = this.canvas.getContext('2d');
+    if (!ctx) return false;
+    this.ctx = ctx;
+    return true;
   }
 }

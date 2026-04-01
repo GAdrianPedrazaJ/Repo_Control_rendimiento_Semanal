@@ -22,7 +22,11 @@
       </div>
 
       <button type="submit" class="btn-ingresar" [disabled]="cargando">
-        {{ cargando ? '⏳ Verificando...' : 'Ingresar' }}
+        <span *ngIf="cargando" class="btn-loading">
+          <app-icon name="loading" size="18"></app-icon>
+          Verificando...
+        </span>
+        <span *ngIf="!cargando">Ingresar</span>
       </button>
     </form>
 
@@ -37,7 +41,7 @@
           (click)="onDemoLogin(user)"
           [disabled]="cargando"
         >
-          <span class="demo-icon">👤</span>
+          <app-icon name="user" [size]="'sm'"></app-icon>
           <span>{{ user.username }}</span>
         </button>
       </div>

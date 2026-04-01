@@ -3,7 +3,7 @@
 
   <div class="role-banner" [ngClass]="{ admin: userRole===UserRole.ADMIN, supervisor: userRole===UserRole.SUPERVISOR }">
     <span *ngIf="userRole===UserRole.ADMIN">Modo Admin</span>
-    <span *ngIf="userRole===UserRole.SUPERVISOR">Modo Supervisor</span>
+
   </div>
 
   <ng-container [ngSwitch]="userRole">

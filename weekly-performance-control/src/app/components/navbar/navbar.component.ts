@@ -1,10 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -18,6 +19,12 @@ export class NavbarComponent {
   @Output() logout = new EventEmitter<void>();
 
   showDropdown = false;
+
+  constructor(private hostElement: ElementRef<HTMLElement>) {}
+  
+  get userInitial(): string {
+    return this.username ? this.username.charAt(0).toUpperCase() : 'U';
+  }
 
   getStatusColor(): string {
     switch (this.syncStatus) {
@@ -47,6 +54,15 @@ export class NavbarComponent {
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.showDropdown) return;
+    const clickedInside = this.hostElement.nativeElement.contains(event.target as Node);
+    if (!clickedInside) {
+      this.showDropdown = false;
+    }
   }
 
   onLogout(): void {

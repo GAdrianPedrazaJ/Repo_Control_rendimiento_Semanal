@@ -308,7 +308,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.empty-icon { font-size: 64px; margin-bottom: 16px; }
+.empty-icon {
+  margin-bottom: 16px;
+  color: #003d99;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .empty-state h3 {
   margin: 0 0 8px 0;

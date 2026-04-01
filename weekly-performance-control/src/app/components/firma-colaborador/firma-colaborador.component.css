@@ -145,6 +145,12 @@
   text-align: center;
 }
 
+.instruccion.warning {
+  margin-top: -8px;
+  color: #856404;
+  font-size: 12px;
+}
+
 .signature-canvas {
   display: block;
   border: 2px solid #e0e0e0;
@@ -191,6 +197,13 @@
 
 .btn-primary:active {
   transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background: #c7c7c7;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-secondary {

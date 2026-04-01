@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Area, Colaborador, DiaSemanal, EstadoSync, RegistroRendimiento, TokenFirma } from '../../models';
-import { DataFetchService, SignatureService, SyncService } from '../../services';
+import { DataFetchService } from '../../services';
 import { FirmaColaboradorComponent } from '../firma-colaborador/firma-colaborador.component';
+import { IconComponent } from '../icon/icon.component';
 
 /**
  * COMPONENTE SUPERVISOR MODE
@@ -18,11 +19,11 @@ import { FirmaColaboradorComponent } from '../firma-colaborador/firma-colaborado
 @Component({
   selector: 'app-supervisor-mode',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FirmaColaboradorComponent],
+  imports: [CommonModule, ReactiveFormsModule, FirmaColaboradorComponent, IconComponent],
   templateUrl: './supervisor-mode.component.html',
   styleUrls: ['./supervisor-mode.component.css']
 })
-export class SupervisorModeComponent implements OnChanges {
+export class SupervisorModeComponent implements OnChanges, OnDestroy {
   // ===== INPUTS (Datos que recibe del componente padre) =====
   @Input() idArea = ''; // ID del área a capturar datos
   @Input() idSupervisor = ''; // ID del supervisor autenticado
@@ -37,6 +38,7 @@ export class SupervisorModeComponent implements OnChanges {
   mensaje = ''; // Mensaje de estado para el usuario
   selectedDay: string = 'lunes'; // Día actual seleccionado para entrada de datos
   selectedColaborador: number | null = null; // Índice del colaborador actual
+  private watchIntervalId: ReturnType<typeof setInterval> | null = null;
 
   semanaActual = this.obtenerNumeroSemana(new Date()); // Número de semana ISO actual
   anioActual = new Date().getFullYear(); // Año actual
@@ -44,8 +46,6 @@ export class SupervisorModeComponent implements OnChanges {
   constructor(
     private fb: FormBuilder,
     private dataFetch: DataFetchService,
-    private signatureService: SignatureService,
-    private syncService: SyncService,
     private cdr: ChangeDetectorRef
   ) {
     // Inicializar formulario reactivo con estructura base
@@ -75,6 +75,13 @@ export class SupervisorModeComponent implements OnChanges {
     // Fallback: Si no hay datos del API, usar datos de prueba
     if (changes['idSupervisor'] && !this.colaboradores && this.idSupervisor) {
       this.cargarDatosDemo();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.watchIntervalId) {
+      clearInterval(this.watchIntervalId);
+      this.watchIntervalId = null;
     }
   }
 
@@ -198,8 +205,13 @@ export class SupervisorModeComponent implements OnChanges {
       const lista = await this.dataFetch.pullColaboradoresPorArea(this.idArea);
       this.crearForm(lista);
 
-      // Iniciar monitoreo de cambios cada 30 segundos para archivos sincrónicos
-      setTimeout(() => this.dataFetch.watchEstadoColaboradores(this.idArea), 30000);
+      // Iniciar monitoreo de cambios cada 30 segundos
+      if (this.watchIntervalId) {
+        clearInterval(this.watchIntervalId);
+      }
+      this.watchIntervalId = setInterval(() => {
+        this.dataFetch.watchEstadoColaboradores(this.idArea);
+      }, 30000);
 
       this.mensaje = `Área cargada: ${area.nombre}`;
     } catch (error) {
@@ -242,7 +254,7 @@ export class SupervisorModeComponent implements OnChanges {
 
     diasBase.forEach((d) => dias[d.dia] = d.valor);
 
-    return this.fb.group({
+    const grupo = this.fb.group({
       id_colaborador: [colaborador.id_colaborador],
       nombre: [colaborador.nombre],
       cargo: [colaborador.cargo],
@@ -251,8 +263,12 @@ export class SupervisorModeComponent implements OnChanges {
       promedio: [colaborador.promedio || 0],
       firma_colaborador: [colaborador.esReadonly || false], // Bandera de firma
       timestamp_firma: [(colaborador as any)?.timestamp_firma || null],
-      token_firma: [colaborador.esReadonly ? (colaborador as any).dias : null]
+      token_firma: [(colaborador as any)?.token_firma || (colaborador as any)?.firma || null]
     });
+    if (colaborador.esReadonly) {
+      (grupo.get('dias') as FormGroup).disable({ emitEvent: false });
+    }
+    return grupo;
   }
 
   /**
@@ -261,6 +277,10 @@ export class SupervisorModeComponent implements OnChanges {
    */
   get colaboradoresFormArray(): FormArray {
     return this.form.get('colaboradores') as FormArray;
+  }
+
+  trackByColaborador(index: number, control: any): string | number {
+    return control.get('id_colaborador')?.value || index;
   }
 
   /**

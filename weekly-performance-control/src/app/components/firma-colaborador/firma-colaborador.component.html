@@ -11,7 +11,8 @@
     [ngClass]="{ firmada: yaFirmado || firmo }"
     class="btn-firmar"
   >
-    {{ yaFirmado || firmo ? '✓ Firmado' : '✍️ Firmar' }}
+    <app-icon [name]="yaFirmado || firmo ? 'check' : 'pen'" [size]="'sm'"></app-icon>
+    {{ yaFirmado || firmo ? 'Firmado' : 'Firmar' }}
   </button>
 
   <!-- MODAL DE FIRMA -->
@@ -19,11 +20,14 @@
     <div class="firma-modal">
       <div class="modal-header">
         <h3>Firma de {{ nombre }}</h3>
-        <button type="button" class="btn-close" (click)="cerrarPanelFirma()">✕</button>
+        <button type="button" class="btn-close" (click)="cerrarPanelFirma()">
+          <app-icon name="close" [size]="'sm'"></app-icon>
+        </button>
       </div>
 
       <div class="modal-body">
         <p class="instruccion">Dibuja tu firma en el área blanca</p>
+        <p class="instruccion warning" *ngIf="!hasDrawn">Debes dibujar una firma antes de confirmar.</p>
         <canvas
           #signatureCanvas
           class="signature-canvas"
@@ -41,13 +45,16 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-secondary" (click)="limpiarFirma()">
-          🔄 Limpiar
+          <app-icon name="refresh" [size]="'sm'"></app-icon>
+          Limpiar
         </button>
         <button type="button" class="btn-secondary" (click)="cerrarPanelFirma()">
-          ✕ Cancelar
+          <app-icon name="close" [size]="'sm'"></app-icon>
+          Cancelar
         </button>
-        <button type="button" class="btn-primary" (click)="confirmarFirma()">
-          ✓ Confirmar Firma
+        <button type="button" class="btn-primary" [disabled]="!hasDrawn" (click)="confirmarFirma()">
+          <app-icon name="check" [size]="'sm'"></app-icon>
+          Confirmar Firma
         </button>
       </div>
     </div>
